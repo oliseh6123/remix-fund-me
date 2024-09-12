@@ -9,13 +9,19 @@ import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/shared/interf
 
 contract FundMe {
 
-    uint256 public minimumUsd = 5e18; //5 * 1e18
+    uint256 public minimumUsd = 5e18; //5 * 1e18 or 5 * 10 ** 18
+
+    address[] public funders;
+
+    mapping(address funder => uint256 amountFunded) public addressToAmountFunded;
     
     function fund() public payable {
         // Allow to send money $
         // Have a minimum $ sent
         // 1. How do we send ETH to this contract?
         require(msg.value >= minimumUsd, "didn't send enough ETH"); // 1e18 = 1 ETH = 10000000000000000000 = 1 * 10 ** 18
+        funders.push(msg.sender);
+        addressToAmountFunded[msg.sender] = addressToAmountFunded[msg.sender] + msg.value;
 
         // What is a revert?
         // Undo any action that have been done, and send the remaining gas back
